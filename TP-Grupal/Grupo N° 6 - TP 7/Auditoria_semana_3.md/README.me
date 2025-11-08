@@ -1,0 +1,74 @@
+TP Semana 3 -- Grupo 6 -- Comision 7
+
+Se encontro la siguiente estructura de carpetas.
+
+TP7/.gitignore
+TP7/db.json
+TP7/eslint.config.json
+TP7/index.html
+TP7/package.json
+TP7/vite.config.js
+TP7/src/assets/react.svg
+TP7/src/components/.gitkeep
+TP7/src/components/Card.jsx
+TP7/src/components/Header.jsx
+TP7/src/components/LogoutButton.jsx
+TP7/src/components/ProtectedLayout.jsx
+TP7/src/components/ProtectedRoute.jsx
+TP7/src/components/TablaUser.jsx           <-- Posible typo ("Tabla" -> "Tabla")
+
+TP7/src/constants/.gitkeep          <-- Vacio
+
+TP7/src/context/AuthContext.jsx         <-- Context para auth (localStorage)
+TP7/src/dashboard/.gitkeep          <-- Vacio
+TP7/src/endpoints/.gitkeep          <-- Vacio
+TP7/src/hooks/useFetch.js           <-- fETCH (APUNTA A JSON/LOCAL)
+TP7/src/layout/.gitkeep             <-- Vacio ()
+TP7/src/layout/MainLayOut.jsx
+TP7/src/layout/Navbar.jsx
+TP7/src/layout/Sidebar.css
+TP7/src/layout/Sidebar.jsx
+
+TP7/src/pages/dashboard/Dashboard.jsx
+TP7/src/pages/DashboardPage.jsx         <-- Posible duplicacion con lo anterior
+TP7/src/pages/LoginPage.jsx
+TP7/src/pages/MiembrosPage.jsx
+TP7/src/pages/ReportesPage.jsx
+
+TP7/src/router/AppRouter.jsx
+TP7/src/router/RouterProtect.jsx        <-- Solapado con ProtectedRoute.jsx
+
+TP7/src/services/actividadesService.js
+TP7/src/services/miembrosService.js
+TP7/src/services/reportesService.js
+
+TP7/src/store/.gitkeep              <-- No hay Zustand implementado aun
+TP7/src/styles/custom.css
+TP7/src/utils/.gitkeep
+TP7/src/utils/fakeData.js  <-- Fake Data local
+TP7/src/App.jsx
+TP7/src/main.jsx
+
+
+> (Que se encontro aqui)
+ El proyecto es un frontend Vite/React que consume json-server (db.json) y persiste login en localStorage.
+ No hay Zustand (ya que no se solicito aun), no existe modulo de Reservas, y hay duplicaciones/archivos sin uso.
+
+ > Duplicacion de layout/headers
+    * components/Header.jsx y layout/Navbar.jsx hacen roles similares.
+    * components/ProtectedLayout.jsx no se usa ya que el router llama MainLayOut
+
+
+> Ruteo y paginas:
+
+src/router/AppRouter.jsx
+    * Usa ProtectedRoute + MainLayOut.
+    Ruta "dashboard" importa desde ../pages/dashboard/Dashboard (esta perfecto)
+    src/pages/DashboardPage.jsx (otro dashboard === es un duplicado)
+
+src/pages/ReportesPage.jsx
+
+Métricas simples (reportes, miembros) desde json-server.
+
+No hay reportes de “historial de reservas por socio/actividad”
+
