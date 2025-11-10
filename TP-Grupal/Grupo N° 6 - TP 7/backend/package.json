@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "API Gym - Grupo 6 (semana 3)",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -18,6 +18,7 @@
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
     "morgan": "^1.10.1",
     "mysql2": "^3.15.3",
     "bcryptjs": "^3.0.3"
