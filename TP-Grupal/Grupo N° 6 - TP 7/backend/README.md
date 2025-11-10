@@ -27,3 +27,8 @@ ejecutamos
 ```bash
 EXIT;
 ```
+
+> Muy importante tuve un problema y es que la terminal toma $ como un caracter para ejecutar en la terminal y no como parte del hash de bcryptjs entonces directamente le solicitamos  la terminal que nos confirme el len: 60 (son 60 caracteres incluyendo el $ que trae)
+```bash
+npm run seed:admin
+```
