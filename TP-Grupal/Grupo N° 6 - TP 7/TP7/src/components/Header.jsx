@@ -1,15 +1,15 @@
 import React from 'react';
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import LogoutButton from './LogoutButton';
-import { useAuth } from '../context/AuthContext';
+import { useAuthStore } from '../store/auth';
 
 const Header = () => {
-  const { user } = useAuth();
+  const user = useAuthStore(s => s.user);
 
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container>
-        <Navbar.Brand href="#home">ZavaGym</Navbar.Brand>
+        <Navbar.Brand href="#home">Correa-Gym</Navbar.Brand>
         <Nav className="me-auto">
           <Nav.Link href="#socios">Socios</Nav.Link>
           <Nav.Link href="#actividades">Actividades</Nav.Link>

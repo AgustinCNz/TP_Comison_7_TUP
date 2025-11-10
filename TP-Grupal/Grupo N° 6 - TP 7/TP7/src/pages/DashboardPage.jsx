@@ -1,10 +1,11 @@
+// src/pages/DashboardPage.jsx
 import React from 'react';
 import { Container, Navbar, Nav } from 'react-bootstrap';
 import LogoutButton from '../components/LogoutButton';
-import { useAuth } from '../context/AuthContext';
+import { useAuthStore } from '../store/auth';
 
 const DashboardPage = () => {
-  const { user } = useAuth();
+  const user = useAuthStore(s => s.user);
 
   return (
     <>
@@ -21,11 +22,11 @@ const DashboardPage = () => {
           </Nav>
         </Container>
       </Navbar>
-      
+
       <Container className="mt-4">
         <h1>Dashboard</h1>
-        <p>Esta es la pagina principal (privada).</p>
-        <p>El contenido (tabla con datos simulados) será agregado por otro integrante</p>
+        <p>Esta es la página principal (privada).</p>
+        <p>El contenido (tabla con datos reales) se muestra en las demás vistas.</p>
       </Container>
     </>
   );

@@ -1,10 +1,10 @@
-// Verifica JWT en Authorization: Bearer <token>
+// Verifica JWT y adjunta req.user
 const jwt = require('jsonwebtoken');
 
 function authRequired(req, res, next) {
   try {
-    const header = req.headers.authorization || '';
-    const token = header.startsWith('Bearer ') ? header.slice(7) : null;
+    const h = req.headers.authorization || '';
+    const token = h.startsWith('Bearer ') ? h.slice(7) : null;
     if (!token) return res.status(401).json({ message: 'Token requerido' });
 
     const payload = jwt.verify(token, process.env.JWT_SECRET);
@@ -15,14 +15,4 @@ function authRequired(req, res, next) {
   }
 }
 
-// Permisos por rol (ej: admin)
-function requireRole(role) {
-  return (req, res, next) => {
-    if (!req.user || req.user.rol !== role) {
-      return res.status(403).json({ message: 'Permiso denegado' });
-    }
-    next();
-  };
-}
-
-module.exports = { authRequired, requireRole };
+module.exports = { authRequired };

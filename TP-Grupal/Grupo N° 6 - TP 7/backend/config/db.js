@@ -1,36 +1,21 @@
-// Conexión MySQL (pool) usando mysql2/promise
+// Conexión MySQL (pool) + helper query()
+// Lee credenciales desde .env
+
 const mysql = require('mysql2/promise');
 
-let pool;
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || '127.0.0.1',
+  port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+});
 
-/**
- * Crea una única instancia de pool y la reutiliza.
- */
-async function getPool() {
-  if (!pool) {
-    pool = await mysql.createPool({
-      host: process.env.DB_HOST,
-      port: process.env.DB_PORT,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0
-    });
-  }
-  return pool;
-}
-
-/**
- * Helper para ejecutar queries con parámetros.
- * @param {string} sql
- * @param {Array} params
- * @returns {Promise<Array>} [rows, fields]
- */
 async function query(sql, params = []) {
-  const p = await getPool();
-  return p.execute(sql, params);
+  const [rows] = await pool.execute(sql, params);
+  return [rows];
 }
 
-module.exports = { getPool, query };
+module.exports = { pool, query };
