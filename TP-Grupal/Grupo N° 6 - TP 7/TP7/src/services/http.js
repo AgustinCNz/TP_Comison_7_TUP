@@ -1,8 +1,9 @@
+// TP7/src/services/http.js
 import { useAuthStore } from '../store/auth';
 
-export const API_URL = 'http://localhost:3001/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_URL = `${API_BASE}/api`;
 
-// Wrapper simple de fetch que inyecta el JWT si existe
 export async function http(path, options = {}) {
   const { token } = useAuthStore.getState();
 
@@ -16,10 +17,10 @@ export async function http(path, options = {}) {
   const contentType = res.headers.get('content-type') || '';
 
   if (!res.ok) {
-    const errText = contentType.includes('application/json')
-      ? JSON.stringify(await res.json())
+    const err = contentType.includes('application/json')
+      ? await res.json().catch(() => ({}))
       : await res.text();
-    throw new Error(errText || `HTTP ${res.status}`);
+    throw new Error(err.message || err || `HTTP ${res.status}`);
   }
 
   return contentType.includes('application/json') ? res.json() : res.text();
