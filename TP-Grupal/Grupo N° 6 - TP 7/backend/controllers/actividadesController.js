@@ -14,8 +14,34 @@ function mapActRow(r) {
 }
 
 async function list(req, res) {
-  const [rows] = await query('SELECT * FROM actividades ORDER BY id DESC');
-  return res.json(rows.map(mapActRow));
+  const [actividades] = await query('SELECT * FROM actividades ORDER BY id DESC');
+
+  // Obtener cantidad de inscritos por actividad
+  const [inscritosRows] = await query(`
+    SELECT actividad_id, COUNT(*) AS inscritos
+    FROM reservas
+    WHERE estado = "activa"
+    GROUP BY actividad_id
+  `);
+
+  // Convertir en un mapa rápido actividad → inscritos
+  const inscritosMap = {};
+  for (const row of inscritosRows) {
+    inscritosMap[row.actividad_id] = row.inscritos;
+  }
+
+  // Combinar actividades + inscritos reales
+  const resultado = actividades.map(a => ({
+    id: a.id,
+    nombre: a.nombre,
+    cupoMaximo: a.cupo_maximo,
+    horario: a.horario,
+    dias: a.dias,
+    instructor: a.instructor,
+    inscritos: inscritosMap[a.id] || 0, // si no hay inscriptos, va 0
+  }));
+
+  return res.json(resultado);
 }
 
 async function getById(req, res) {
@@ -65,4 +91,43 @@ async function remove(req, res) {
   return res.json({ ok: true });
 }
 
-module.exports = { list, getById, create, update, remove };
+// Lista actividades + cupos ocupados (reservas del día)
+async function listConCupos(req, res) {
+  const [rows] = await query(`
+    SELECT a.id, a.nombre, a.cupo_maximo, a.horario, a.dias, a.instructor,
+      (
+        SELECT COUNT(*)
+        FROM reservas r
+        WHERE r.actividad_id = a.id
+          AND r.estado = 'activa'
+          AND r.fecha = CURDATE()
+      ) AS cupos_ocupados
+    FROM actividades a
+    ORDER BY a.id DESC
+  `);
+
+  const data = rows.map(r => {
+    const inscritos = r.cupos_ocupados || 0;
+    const disponibles = r.cupo_maximo - inscritos;
+    const porcentaje = r.cupo_maximo > 0
+      ? Math.round((inscritos / r.cupo_maximo) * 100)
+      : 0;
+
+    return {
+      id: r.id,
+      nombre: r.nombre,
+      cupoMaximo: r.cupo_maximo,
+      horario: r.horario,
+      dias: r.dias,
+      instructor: r.instructor,
+      inscritos,
+      disponibles,
+      porcentaje
+    };
+  });
+
+  return res.json(data);
+}
+
+
+module.exports = { list, getById, create, update, remove, listConCupos };
