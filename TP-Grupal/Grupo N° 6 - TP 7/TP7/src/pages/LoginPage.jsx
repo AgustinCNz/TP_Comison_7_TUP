@@ -14,8 +14,12 @@ const LoginPage = () => {
   const loginAsync = useAuthStore(s => s.loginAsync);
 
   useEffect(() => {
-    if (token) navigate('/dashboard');
-  }, [token, navigate]);
+  if (token) {
+    const user = useAuthStore.getState().user;
+    if (user.rol === 'admin') navigate('/dashboard');
+    else navigate('/usuario');
+  }
+}, [token, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -25,7 +29,12 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const ok = await loginAsync(formData.email, formData.password);
-    if (ok) navigate('/dashboard');
+
+if (ok) {
+  const user = useAuthStore.getState().user;
+  if (user.rol === 'admin') navigate('/dashboard');
+  else navigate('/usuario');
+}
   };
 
   return (

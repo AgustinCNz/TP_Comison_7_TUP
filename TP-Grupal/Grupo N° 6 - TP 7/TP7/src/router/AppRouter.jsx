@@ -6,26 +6,36 @@ import MiembrosPage from '../pages/MiembrosPage';
 import ReportesPage from '../pages/ReportesPage';
 import MainLayout from "../layout/MainLayOut.jsx";
 import ProtectedRoute from '../components/ProtectedRoute';
+import { AdminRoute, UserRoute } from '../components/RoleRoute';
+import HomeUsuario from '../pages/usuarios/HomeUsuario.jsx';
 import { useAuthStore } from '../store/auth';
 
 const AppRouter = () => {
   const token = useAuthStore(s => s.token);
+  const user = useAuthStore(s => s.user);
 
   return (
     <Routes>
-      {/* Si ya hay token, redirige a /dashboard; si no, muestra login */}
+
+      {/* LOGIN */}
       <Route
         path="/login"
-        element={token ? <Navigate to="/dashboard" replace /> : <LoginPage />}
+        element={token ? (
+          user?.rol === "admin"
+            ? <Navigate to="/dashboard" replace />
+            : <Navigate to="/usuario" replace />
+        ) : (
+          <LoginPage />
+        )}
       />
 
-      {/* Rutas protegidas */}
+      {/* 🔵 RUTAS ADMIN (con sidebar) */}
       <Route
         path="/"
         element={
-          <ProtectedRoute>
+          <AdminRoute>
             <MainLayout />
-          </ProtectedRoute>
+          </AdminRoute>
         }
       >
         <Route index element={<Navigate to="/dashboard" replace />} />
@@ -34,8 +44,23 @@ const AppRouter = () => {
         <Route path="reportes" element={<ReportesPage />} />
       </Route>
 
+      {/* 🟢 RUTAS USUARIO */}
+      <Route
+  path="/usuario"
+  element={
+    <UserRoute>
+      <MainLayout />
+    </UserRoute>
+  }
+>
+  <Route index element={<HomeUsuario />} />
+  <Route path="home" element={<HomeUsuario />} />
+  <Route path="reservas" element={<HomeUsuario />} />
+</Route>
+
       {/* Fallback */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
+
     </Routes>
   );
 };

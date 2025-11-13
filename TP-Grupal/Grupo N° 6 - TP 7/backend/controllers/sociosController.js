@@ -8,7 +8,7 @@ function mapSocioRow(r) {
     email: r.email,
     telefono: r.telefono,
     plan: r.plan,
-    status: r.estado,
+    status: r.status,
     fechaIngreso: r.fecha_ingreso,
   };
 }
@@ -30,7 +30,7 @@ async function create(req, res) {
   if (!name || !email) return res.status(400).json({ message: 'name y email son requeridos' });
 
   await query(
-    `INSERT INTO socios (nombre, email, telefono, plan, estado, fecha_ingreso)
+    `INSERT INTO socios (nombre, email, telefono, plan, status, fecha_ingreso)
      VALUES (?, ?, ?, ?, ?, ?)`,
     [name, email, telefono || null, plan || 'Básico', status || 'Activo', fechaIngreso || null]
   );
@@ -47,7 +47,7 @@ async function update(req, res) {
   if (!exist.length) return res.status(404).json({ message: 'Socio no encontrado' });
 
   await query(
-    `UPDATE socios SET nombre = ?, email = ?, telefono = ?, plan = ?, estado = ?, fecha_ingreso = ?
+    `UPDATE socios SET nombre = ?, email = ?, telefono = ?, plan = ?, status = ?, fecha_ingreso = ?
      WHERE id = ?`,
     [name, email, telefono, plan, status, fechaIngreso, id]
   );
