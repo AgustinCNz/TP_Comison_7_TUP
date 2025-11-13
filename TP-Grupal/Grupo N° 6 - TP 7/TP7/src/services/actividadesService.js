@@ -26,3 +26,7 @@ export const updateActividad = async (id, actividad) => {
 export const deleteActividad = async (id) => {
   return http(`/actividades/${id}`, { method: 'DELETE' });
 };
+
+export const getActividadesConCupos = async () => {
+  return http('/actividades/con-cupos');
+};
